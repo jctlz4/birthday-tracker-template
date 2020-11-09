@@ -6,6 +6,8 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+require('./server/db/config');
+
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'client/build')));
