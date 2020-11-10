@@ -1,60 +1,68 @@
 const Birthday = require('../db/models/birthday');
 
-const getAllBirthdays = (req, res) => {
-  Birthday.find()
-    .then((birthday) => res.status(200).json(birthday))
-    .catch((err) => res.status(500).json('Error: ' + err));
-};
-
-const updateBirthday = async (req, res) => {
-  const birthday_id = req.params.id;
-  let obj = req.body;
-  console.log(obj);
+// get a birthday
+const getBirthday = async (req, res) => {
   try {
-    await Birthday.findByIdAndUpdate(user_id, obj, { new: true }, function (
-      err,
-      docs
-    ) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('Updated Birthday : ', docs);
-        return res.status(201).json(docs);
-      }
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const birthdays = await Birthday.find();
+    res.json(birthdays);
+  } catch (err) {
+    console.log(err.toString());
   }
 };
 
-const createBirthday = (req, res) => {
-  const birthday = new Birthday(req.body);
-  birthday
-    .save()
-    .then((birthday) => {
-      res.status(201).json(birthday);
-    })
-    .catch((err) => {
-      res.status(500).json('Error: ' + err);
-    });
+// make a birthday
+
+const makeBirthday = async (req, res) => {
+  try {
+    const birthday = new Birthday(req.body);
+    const response = await birthday.save();
+    res.json(response);
+  } catch (err) {
+    console.log(err.toString());
+  }
 };
 
-const deleteBirthdays = async (req, res) => {
-  const birthday = req.params.id;
-  console.log(birthday);
+// get a single birthday
 
+const getSingleBirthday = async (req, res) => {
   try {
-    await Birthday.findOneAndDelete({ _id: Birthday }).then(() => {
-      return res.status(204).json({ message: 'deleted!' });
+    const birthday = await Birthday.findById(req.params.id);
+    res.json(birthday);
+  } catch (err) {
+    console.log(err.toString());
+  }
+};
+
+// update a birthday
+
+const updateBirthday = async (req, res) => {
+  try {
+    const birthday = await Birthday.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
     });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    await birthday.save();
+    res.json(birthday);
+  } catch (err) {
+    console.log('Error: ' + err);
+  }
+};
+
+// Delete a birthday
+
+const deleteBirthday = async (req, res) => {
+  try {
+    await Birthday.findByIdAndDelete(req.params.id);
+    res.json('birthday deleted');
+  } catch (err) {
+    console.log(err.toString());
   }
 };
 
 module.exports = {
+  deleteBirthday,
+  makeBirthday,
   updateBirthday,
-  createBirthday,
-  deleteBirthdays,
-  getAllBirthdays
+  getSingleBirthday,
+  getBirthday
 };

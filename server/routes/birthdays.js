@@ -1,14 +1,21 @@
 const router = require('express').Router();
+// const Birthday = require('../db/models/birthday');
 const {
-  getAllBirthdays,
-  updateBirthday,
-  createBirthday,
-  deleteBirthdays
-} = require('../controllers/birthdays');
+  getBirthday,
+  makeBirthday,
+  getSingleBirthday,
+  deleteBirthday,
+  updateBirthday
+} = require('../controllers/birthday');
 
-router.get('/', getAllBirthdays);
-router.patch('/:id', updateBirthday);
-router.post('/', createBirthday);
-router.delete('/:id', deleteBirthdays);
+router.get('/', getBirthday);
+
+router.post('/', makeBirthday);
+
+router.get('/:id', getSingleBirthday);
+
+router.put('/:id', updateBirthday);
+
+router.delete('/:id', deleteBirthday);
 
 module.exports = router;
